@@ -9,6 +9,7 @@ SoundFile littleDrunkQuietFloats;
 SoundFile theNightFalling;
 
 SoundFile[] songs = {battleGround, coldRise, coldStep, eureka, ghostWalk, littleDrunkQuietFloats, theNightFalling};
+String[] songNames = {"battleGround", "coldRise", "coldStep", "eureka", "ghostWalk", "littleDrunkQuietFloats", "theNightFalling"};
 
 void assignSongs() {
   battleGround = new SoundFile(this, "battleGround.mp3");

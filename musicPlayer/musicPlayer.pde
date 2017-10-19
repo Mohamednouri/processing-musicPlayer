@@ -1,36 +1,44 @@
 import processing.sound.*;
 
-boolean play = false;
-int currentSong = 5;
-int playX = 295;
-int playY = 155;
-int nextX = 350;
-int nextY = 155;
-int prevX = 200;
-int prevY = 155;
+PFont seg;
 
+boolean play = false;
+boolean pressed = false;
+int currentSong = 0;
+int playX = 295;
+int playY = 200;
+int nextX = 350;
+int nextY = 200;
+int prevX = 240;
+int prevY = 200;
 
 void setup() {
   size(640, 360);
+  
+  seg = createFont("digital-7.ttf", 50.0);
+  textFont(seg, 50);
   
   assignSongs();
 }
 
 void draw() {
   background(10);
+  fill(255);
+  text(str(currentSong + 1) + "-" + songNames[currentSong], 100, 100);
+  
   stroke(255);
-  fill(10);
-  rect(playX, playY, 50, 50, 10);
   if (play) {
     fill(0, 150, 50);
   } else {
-    fill(10);
+    noFill();
   }
   triangle(playX + 10, playY + 15, playX + 27, playY + 25, playX + 10, playY + 35);
   rect(playX + 27, playY + 15, 5, 20);
   rect(playX + 34, playY + 15, 5, 20);
   
-  fill(10);
+  noFill();
+  
+  rect(playX, playY, 50, 50, 10);
   
   rect(nextX, nextY, 50, 50, 10);
   triangle(nextX + 10, nextY + 15, nextX + 27, nextY + 25, nextX + 10, nextY + 35);
@@ -40,17 +48,24 @@ void draw() {
   triangle(prevX + 27, prevY + 15, prevX + 10, prevY + 25, prevX + 27, prevY + 35);
   triangle(prevX + 44, prevY + 15, prevX + 27, prevY + 25, prevX + 44, prevY + 35);
   
-  /*if (mousePressed && (((mouseX > 300) && (mouseX < 350)) && ((mouseY > 170) && (mouseY < 220)))) {
-    if (play) {
-      play = false;
-    } else {
-      play = true;
+  if (mousePressed) {
+    if (((mouseX > playX) && (mouseX < playX + 50)) && ((mouseY > playY) && (mouseY < playY + 50)) && !(pressed)) {
+      if (play) {
+        play = false;
+      } else {
+        play = true;
+      }
+      playPauseMusic();
+      pressed = true;
+    } else if (((mouseX > nextX) && (mouseX < nextX + 50)) && ((mouseY > nextY) && (mouseY < nextY + 50)) && !(pressed)) {
+      nextSong();
+      pressed = true;
+    } else if (((mouseX > prevX) && (mouseX < prevX + 50)) && ((mouseY > prevY) && (mouseY < prevY + 50)) && !(pressed)) {
+      prevSong();
+      pressed = true;
     }
-    playPauseMusic();
-  }*/
-  
-  if (keyPressed && key == ' ') {
-    playPressed();
+  } else {
+    pressed = false;
   }
 }
 
@@ -63,14 +78,32 @@ void playPressed() {
   playPauseMusic();
 }
 
+void prevSong() {
+  songs[currentSong].stop();
+  if (currentSong == 0) {
+    currentSong = songs.length - 1;
+  } else {
+    currentSong -= 1;
+  }
+  songs[currentSong].play();
+  play = true;
+}
+
+void nextSong() {
+  songs[currentSong].stop();
+  if (currentSong == songs.length - 1) {
+    currentSong = 0;
+  } else {
+    currentSong += 1;
+  }
+  songs[currentSong].play();
+  play = true;
+}
+
 void playPauseMusic() {
-  try {
-    if (play) {
-      songs[currentSong].play();
-    } else {
-      songs[currentSong].stop();
-    }
-  } catch (Exception ex) {
-    print("oops");
+  if (play) {
+    songs[currentSong].play();
+  } else {
+    songs[currentSong].stop();
   }
 }
