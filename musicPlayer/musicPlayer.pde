@@ -50,30 +50,17 @@ void draw() {
     currentTimeDisplay = str(currentTimeM) + ":" + str(currentTimeS);
   }
   
-  if ((songDurationM <= currentTimeM) && (songDurationS <= currentTimeS)) {
-    endOfSong();
-  }
-  
   background(10);
   fill(0, 150, 50);
-  rect(screenX, screenY, 343, 100);
+  rect(screenX, screenY, 343, 82, 10);
   fill(255);
   text(str(currentSong + 1) + "-" + songNames[currentSong], screenX, screenY + 38);
   text(songDurationDisplay, screenX, screenY + 76);
   text(currentTimeDisplay, screenX + 251, screenY + 76);
   songs[currentSong].amp(vol);
   
-  stroke(255);
   strokeWeight(1);
-  if (play) {
-    fill(0, 150, 50);
-  } else {
-    noFill();
-  }
-  triangle(playX + 10, playY + 15, playX + 27, playY + 25, playX + 10, playY + 35);
-  rect(playX + 27, playY + 15, 5, 20);
-  rect(playX + 34, playY + 15, 5, 20);
-  
+  stroke(255);
   noFill();
   
   rect(playX, playY, 50, 50, 10);
@@ -86,21 +73,18 @@ void draw() {
   triangle(prevX + 27, prevY + 15, prevX + 10, prevY + 25, prevX + 27, prevY + 35);
   triangle(prevX + 44, prevY + 15, prevX + 27, prevY + 25, prevX + 44, prevY + 35);
   
+  if (play) {
+    fill(0, 150, 50);
+  }
+  triangle(playX + 10, playY + 15, playX + 27, playY + 25, playX + 10, playY + 35);
+  rect(playX + 27, playY + 15, 5, 20);
+  rect(playX + 34, playY + 15, 5, 20);
+  
   strokeWeight(3);
   line(volLineX, volLineY, volLineX + 160, volLineY);
   noStroke();
   fill(0, 150, 50);
   ellipse(volDotX, volDotY, 12, 12);
-  
-  if (keyPressed && key == 'w') {
-    if (vol < 1.0) {
-      vol += 0.1;
-    }
-  } else if (keyPressed && key == 's') {
-    if (vol > 0) {
-      vol -= 0.1;
-    }
-  }
   
   if (mousePressed) {
     if (((mouseX > playX) && (mouseX < playX + 50)) && ((mouseY > playY) && (mouseY < playY + 50)) && !(pressed)) {
@@ -124,13 +108,47 @@ void draw() {
     pressed = false;
   }
   
-  checkVolume();
+    
+  if ((songDurationM <= currentTimeM) && (songDurationS <= currentTimeS)) {
+    endOfSong();
+  }
+  
+  vol = ((volDotX - volLineX) / 160);
+  
   checkSongTime();
 }
 
-void endOfSong() {
-  songs[currentSong].stop();
-  if (currentSong == songs.length - 1) {
+void playPauseMusic() { //function to play and pause the music when the play button is pressed
+  if (play) { //if the music is supposed to be playing
+    songs[currentSong].play(); //plays the song
+    songDurationM = floor((songs[currentSong].duration()) / 60); //finds how many minutes long the song is
+    songDurationS = int((60 * ((songs[currentSong].duration()) / 60 - (floor((songs[currentSong].duration()) / 60))))); //finds how many seconds long the song is (excluding any minutes)
+    currentTimeM = 0; //these three lines of code are used to setup the program to count how far into the song we are
+    currentTimeS = 0;
+    songStartMillis = millis();
+  } else { //if the music is supposed to be stopped
+    songs[currentSong].stop(); //stops the music
+  }
+}
+
+void endOfSong() { //function that goes to the next song when the current one is finished
+  songs[currentSong].stop(); //stops playing the current song (REDUNDANT)
+  if (currentSong == songs.length - 1) { //if the current song is the last one in the playlist
+    currentSong = 0; //goes back to first song
+  } else {
+    currentSong += 1; //goes to next song
+  }
+  songs[currentSong].play(); //for explanation check playPauseMusic()
+  songDurationM = floor((songs[currentSong].duration()) / 60);
+  songDurationS = int((60 * ((songs[currentSong].duration()) / 60 - (floor((songs[currentSong].duration()) / 60)))));
+  currentTimeM = 0;
+  currentTimeS = 0;
+  songStartMillis = millis();
+}
+
+void nextSong() { //function that goes to the next song when the next song button is pressed
+  songs[currentSong].stop(); //stops the current song
+  if (currentSong == songs.length - 1) { //for explanation check playPauseMusic() and endOfSong()
     currentSong = 0;
   } else {
     currentSong += 1;
@@ -141,10 +159,26 @@ void endOfSong() {
   currentTimeM = 0;
   currentTimeS = 0;
   songStartMillis = millis();
-  play = true;
+  play = true; //used so that you can go the the next song if a song isn't playing
 }
 
-void checkSongTime() {
+void prevSong() { //function that goes to the previous song when the previous song button is pressed
+  songs[currentSong].stop(); //for explanation check playPauseMusic() and endOfSong()
+  if (currentSong == 0) { //reverse of going to next song
+    currentSong = songs.length - 1;
+  } else {
+    currentSong -= 1;
+  }
+  songs[currentSong].play();
+  songDurationM = floor((songs[currentSong].duration()) / 60);
+  songDurationS = int((60 * ((songs[currentSong].duration()) / 60 - (floor((songs[currentSong].duration()) / 60)))));
+  currentTimeM = 0;
+  currentTimeS = 0;
+  songStartMillis = millis();
+  play = true; //used so that you can go the the next song if a song isn't playing
+}
+
+void checkSongTime() { //WORK ON THIS
   if (play) {
     if (((millis() - songStartMillis) > currentTimeS * 1000)) {
       currentTimeS += 1;
@@ -157,66 +191,8 @@ void checkSongTime() {
   }
 }
 
-void checkVolume() {
-  vol = ((volDotX - volLineX) / 160);
-}
-
-void volChange() {
-  if ((mouseX > volLineX) && (mouseX < volLineX + 160)) {
+void volChange() { //function to move the volume slider
+  if ((mouseX > volLineX) && (mouseX < volLineX + 160)) { //move to mouseX as long as it doesn't go off of the line
     volDotX = mouseX;
-  }
-}
-
-void playPressed() {
-  if (play) {
-    play = false;
-  } else {
-    play = true;
-  }
-  playPauseMusic();
-}
-
-void prevSong() {
-  songs[currentSong].stop();
-  if (currentSong == 0) {
-    currentSong = songs.length - 1;
-  } else {
-    currentSong -= 1;
-  }
-  songs[currentSong].play();
-  songDurationM = floor((songs[currentSong].duration()) / 60);
-  songDurationS = int((60 * ((songs[currentSong].duration()) / 60 - (floor((songs[currentSong].duration()) / 60)))));
-  currentTimeM = 0;
-  currentTimeS = 0;
-  songStartMillis = millis();
-  play = true;
-}
-
-void nextSong() {
-  songs[currentSong].stop();
-  if (currentSong == songs.length - 1) {
-    currentSong = 0;
-  } else {
-    currentSong += 1;
-  }
-  songs[currentSong].play();
-  songDurationM = floor((songs[currentSong].duration()) / 60);
-  songDurationS = int((60 * ((songs[currentSong].duration()) / 60 - (floor((songs[currentSong].duration()) / 60)))));
-  currentTimeM = 0;
-  currentTimeS = 0;
-  songStartMillis = millis();
-  play = true;
-}
-
-void playPauseMusic() {
-  if (play) {
-    songs[currentSong].play();
-    songDurationM = floor((songs[currentSong].duration()) / 60);
-    songDurationS = int((60 * ((songs[currentSong].duration()) / 60 - (floor((songs[currentSong].duration()) / 60)))));
-    currentTimeM = 0;
-    currentTimeS = 0;
-    songStartMillis = millis();
-  } else {
-    songs[currentSong].stop();
   }
 }
