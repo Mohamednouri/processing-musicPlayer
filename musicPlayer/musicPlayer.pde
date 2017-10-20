@@ -18,11 +18,15 @@ float volLineY = 260;
 float volDotX = 384;
 float volDotY = 260;
 float vol = 0.9;
-float songDurationM = 0;
-float songDurationS = 000123;
+int songDurationM = 0;
+int songDurationS = 001234;
 float songStartMillis = 0;
 int currentTimeM = 0;
 int currentTimeS = 000123;
+String songDurationDisplay;
+String currentTimeDisplay;
+int songDurationComp;
+int currentTimeDisplayComp;
 
 void setup() {
   size(640, 360);
@@ -34,12 +38,29 @@ void setup() {
 }
 
 void draw() {
+  if (songDurationS < 10) {
+    songDurationDisplay = str(songDurationM) + ":0" + str(songDurationS);
+  } else {
+    songDurationDisplay = str(songDurationM) + ":" + str(songDurationS);
+  }
+  
+  if (currentTimeS < 10) {
+    currentTimeDisplay = str(currentTimeM) + ":0" + str(currentTimeS);
+  } else {
+    currentTimeDisplay = str(currentTimeM) + ":" + str(currentTimeS);
+  }
+  
+  if ((songDurationM <= currentTimeM) && (songDurationS <= currentTimeS)) {
+    endOfSong();
+  }
+  
   background(10);
   fill(0, 150, 50);
   rect(screenX, screenY, 343, 100);
   fill(255);
   text(str(currentSong + 1) + "-" + songNames[currentSong], screenX, screenY + 38);
-  text(str(songDurationM).substring(0, 1) + ":" + str(songDurationS).substring(2, 4), screenX, screenY + 76);
+  text(songDurationDisplay, screenX, screenY + 76);
+  text(currentTimeDisplay, screenX + 251, screenY + 76);
   songs[currentSong].amp(vol);
   
   stroke(255);
@@ -107,6 +128,22 @@ void draw() {
   checkSongTime();
 }
 
+void endOfSong() {
+  songs[currentSong].stop();
+  if (currentSong == songs.length - 1) {
+    currentSong = 0;
+  } else {
+    currentSong += 1;
+  }
+  songs[currentSong].play();
+  songDurationM = floor((songs[currentSong].duration()) / 60);
+  songDurationS = int((60 * ((songs[currentSong].duration()) / 60 - (floor((songs[currentSong].duration()) / 60)))));
+  currentTimeM = 0;
+  currentTimeS = 0;
+  songStartMillis = millis();
+  play = true;
+}
+
 void checkSongTime() {
   if (play) {
     if (((millis() - songStartMillis) > currentTimeS * 1000)) {
@@ -118,7 +155,6 @@ void checkSongTime() {
       currentTimeS -= 60;
     }
   }
-  print("\n" + str(currentTimeM) + ":" + str(currentTimeS));
 }
 
 void checkVolume() {
@@ -149,7 +185,7 @@ void prevSong() {
   }
   songs[currentSong].play();
   songDurationM = floor((songs[currentSong].duration()) / 60);
-  songDurationS = (60 * ((songs[currentSong].duration()) / 60 - (floor((songs[currentSong].duration()) / 60))) / 100);
+  songDurationS = int((60 * ((songs[currentSong].duration()) / 60 - (floor((songs[currentSong].duration()) / 60)))));
   currentTimeM = 0;
   currentTimeS = 0;
   songStartMillis = millis();
@@ -165,7 +201,7 @@ void nextSong() {
   }
   songs[currentSong].play();
   songDurationM = floor((songs[currentSong].duration()) / 60);
-  songDurationS = (60 * ((songs[currentSong].duration()) / 60 - (floor((songs[currentSong].duration()) / 60))) / 100);
+  songDurationS = int((60 * ((songs[currentSong].duration()) / 60 - (floor((songs[currentSong].duration()) / 60)))));
   currentTimeM = 0;
   currentTimeS = 0;
   songStartMillis = millis();
@@ -176,7 +212,7 @@ void playPauseMusic() {
   if (play) {
     songs[currentSong].play();
     songDurationM = floor((songs[currentSong].duration()) / 60);
-    songDurationS = (60 * ((songs[currentSong].duration()) / 60 - (floor((songs[currentSong].duration()) / 60))) / 100);
+    songDurationS = int((60 * ((songs[currentSong].duration()) / 60 - (floor((songs[currentSong].duration()) / 60)))));
     currentTimeM = 0;
     currentTimeS = 0;
     songStartMillis = millis();
