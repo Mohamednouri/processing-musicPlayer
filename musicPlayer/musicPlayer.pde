@@ -11,6 +11,18 @@ int nextX = 350;
 int nextY = 200;
 int prevX = 240;
 int prevY = 200;
+int screenX = 149;
+int screenY = 50;
+float volLineX = 240; //these are floats so that the program can get volume information from them
+float volLineY = 260;
+float volDotX = 384;
+float volDotY = 260;
+float vol = 0.9;
+float songDurationM = 0;
+float songDurationS = 000123;
+float songStartMillis = 0;
+int currentTimeM = 0;
+int currentTimeS = 000123;
 
 void setup() {
   size(640, 360);
@@ -23,10 +35,15 @@ void setup() {
 
 void draw() {
   background(10);
+  fill(0, 150, 50);
+  rect(screenX, screenY, 343, 100);
   fill(255);
-  text(str(currentSong + 1) + "-" + songNames[currentSong], 100, 100);
+  text(str(currentSong + 1) + "-" + songNames[currentSong], screenX, screenY + 38);
+  text(str(songDurationM).substring(0, 1) + ":" + str(songDurationS).substring(2, 4), screenX, screenY + 76);
+  songs[currentSong].amp(vol);
   
   stroke(255);
+  strokeWeight(1);
   if (play) {
     fill(0, 150, 50);
   } else {
@@ -48,6 +65,22 @@ void draw() {
   triangle(prevX + 27, prevY + 15, prevX + 10, prevY + 25, prevX + 27, prevY + 35);
   triangle(prevX + 44, prevY + 15, prevX + 27, prevY + 25, prevX + 44, prevY + 35);
   
+  strokeWeight(3);
+  line(volLineX, volLineY, volLineX + 160, volLineY);
+  noStroke();
+  fill(0, 150, 50);
+  ellipse(volDotX, volDotY, 12, 12);
+  
+  if (keyPressed && key == 'w') {
+    if (vol < 1.0) {
+      vol += 0.1;
+    }
+  } else if (keyPressed && key == 's') {
+    if (vol > 0) {
+      vol -= 0.1;
+    }
+  }
+  
   if (mousePressed) {
     if (((mouseX > playX) && (mouseX < playX + 50)) && ((mouseY > playY) && (mouseY < playY + 50)) && !(pressed)) {
       if (play) {
@@ -63,9 +96,38 @@ void draw() {
     } else if (((mouseX > prevX) && (mouseX < prevX + 50)) && ((mouseY > prevY) && (mouseY < prevY + 50)) && !(pressed)) {
       prevSong();
       pressed = true;
+    } else if (((mouseX > volDotX - 12) && (mouseX < volDotX + 12)) && ((mouseY > volDotY - 12) && (mouseY < volDotY + 12))) {
+      volChange();
     }
   } else {
     pressed = false;
+  }
+  
+  checkVolume();
+  checkSongTime();
+}
+
+void checkSongTime() {
+  if (play) {
+    if (((millis() - songStartMillis) > currentTimeS * 1000)) {
+      currentTimeS += 1;
+    }
+    if (currentTimeS / 60 >= 1) {
+      currentTimeM += 1;
+      songStartMillis = millis();
+      currentTimeS -= 60;
+    }
+  }
+  print("\n" + str(currentTimeM) + ":" + str(currentTimeS));
+}
+
+void checkVolume() {
+  vol = ((volDotX - volLineX) / 160);
+}
+
+void volChange() {
+  if ((mouseX > volLineX) && (mouseX < volLineX + 160)) {
+    volDotX = mouseX;
   }
 }
 
@@ -86,6 +148,11 @@ void prevSong() {
     currentSong -= 1;
   }
   songs[currentSong].play();
+  songDurationM = floor((songs[currentSong].duration()) / 60);
+  songDurationS = (60 * ((songs[currentSong].duration()) / 60 - (floor((songs[currentSong].duration()) / 60))) / 100);
+  currentTimeM = 0;
+  currentTimeS = 0;
+  songStartMillis = millis();
   play = true;
 }
 
@@ -97,12 +164,22 @@ void nextSong() {
     currentSong += 1;
   }
   songs[currentSong].play();
+  songDurationM = floor((songs[currentSong].duration()) / 60);
+  songDurationS = (60 * ((songs[currentSong].duration()) / 60 - (floor((songs[currentSong].duration()) / 60))) / 100);
+  currentTimeM = 0;
+  currentTimeS = 0;
+  songStartMillis = millis();
   play = true;
 }
 
 void playPauseMusic() {
   if (play) {
     songs[currentSong].play();
+    songDurationM = floor((songs[currentSong].duration()) / 60);
+    songDurationS = (60 * ((songs[currentSong].duration()) / 60 - (floor((songs[currentSong].duration()) / 60))) / 100);
+    currentTimeM = 0;
+    currentTimeS = 0;
+    songStartMillis = millis();
   } else {
     songs[currentSong].stop();
   }

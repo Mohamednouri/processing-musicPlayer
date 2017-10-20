@@ -12,6 +12,12 @@ SoundFile[] songs = {battleGround, coldRise, coldStep, eureka, ghostWalk, little
 String[] songNames = {"battleGround", "coldRise", "coldStep", "eureka", "ghostWalk", "littleDrunkQuietFloats", "theNightFalling"};
 
 void assignSongs() {
+  for (int i = 0; i < songNames.length; i++) {
+    if (songNames[i].length() > 13) {
+      songNames[i] = songNames[i].substring(0, 10) + "...";
+    }
+  }
+  
   battleGround = new SoundFile(this, "battleGround.mp3");
   coldRise = new SoundFile(this, "coldRise.mp3");
   coldStep = new SoundFile(this, "coldStep.mp3");
