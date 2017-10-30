@@ -53,13 +53,13 @@ void draw() {
   triangle(prevX + 44, prevY + 15, prevX + 27, prevY + 25, prevX + 44, prevY + 35);
   
   if (play) {
-    fill(0, 150, 50);
+    fill(0, 150, 50); //makes the play pause button green while music playing
   }
-  triangle(playX + 10, playY + 15, playX + 27, playY + 25, playX + 10, playY + 35);
+  triangle(playX + 10, playY + 15, playX + 27, playY + 25, playX + 10, playY + 35); //finishes drawing the play pause button
   rect(playX + 27, playY + 15, 5, 20);
   rect(playX + 34, playY + 15, 5, 20);
   
-  strokeWeight(3);
+  strokeWeight(3); //draws the volume bar
   line(volLineX, volLineY, volLineX + 160, volLineY);
   stroke(0, 150, 50);
   line(volLineX, volLineY, volDotX, volLineY);
@@ -118,7 +118,7 @@ void endOfSong() { //function that goes to the next song when the current one is
   } else {
     currentSong += 1; //goes to next song
   }
-  songs[currentSong].play(); ////plays the song
+  songs[currentSong].play(); //plays the song
   songDurationM = floor((songs[currentSong].duration()) / 60); //for explanation check playPauseMusic()
   songDurationS = int((60 * ((songs[currentSong].duration()) / 60 - (floor((songs[currentSong].duration()) / 60)))));
   currentTimeM = 0; //these three lines of code are used to setup the program to count how far into the song the program is
