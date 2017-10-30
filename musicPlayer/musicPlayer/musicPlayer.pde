@@ -2,30 +2,6 @@ import processing.sound.*;
 
 PFont seg; //creates font
 
-boolean play = false;
-boolean pressed = false;
-int currentSong = 0;
-int playX = 166; //play button coordinates 295
-int playY = 116;
-int nextX = 221; //next song button coordinates
-int nextY = 116;
-int prevX = 111; //previous song button coordinates
-int prevY = 116;
-int screenX = 20; //screen coordinates
-int screenY = 20;
-float volLineX = 111; //volume slider coordinates, floats to get volume information from them
-float volLineY = 176;
-float volDotX = 255;
-float volDotY = 176;
-float vol = 0.9; //current volume level, 0 - 1
-int songDurationM = 0; //how many minutes long the song is
-int songDurationS = 0; //how many seconds long the song is, excluding minutes
-float songStartMillis = 0; //used to find how far into the song the program is
-int currentTimeM = 0; //how many minutes into the song the program is
-int currentTimeS = 1; //how many seconds into the song the program is, excluding minutes
-String songDurationDisplay; //used to display the length of the song
-String currentTimeDisplay; //used to display how far into the song the program is
-
 void setup() {
   size(383, 200); 
   seg = createFont("digital-7.ttf", 50.0); //assigns the font
@@ -52,25 +28,27 @@ void draw() {
   
   //start of drawing shapes
   background(10);
-  fill(0, 150, 50);
+  fill(0, 150, 50); //draws fake screen
   rect(screenX, screenY, 343, 82, 10);
-  fill(255);
-  text(str(currentSong + 1) + "-" + songNames[currentSong], screenX, screenY + 38);
-  text(songDurationDisplay, screenX, screenY + 76);
-  text(currentTimeDisplay, screenX + 251, screenY + 76);
+  
+  fill(255); //draws information to screen
+  text(str(currentSong + 1) + "-" + songNames[currentSong], screenX, screenY + 38); //song name
+  text(songDurationDisplay, screenX, screenY + 76); //length of song
+  text(currentTimeDisplay, screenX + 251, screenY + 76); //how far along into song
+  
   songs[currentSong].amp(vol);
   
   strokeWeight(1);
   stroke(255);
   noFill();
   
-  rect(playX, playY, 50, 50, 10);
+  rect(playX, playY, 50, 50, 10); //draws back of play button
   
-  rect(nextX, nextY, 50, 50, 10);
+  rect(nextX, nextY, 50, 50, 10); //draws next song button
   triangle(nextX + 10, nextY + 15, nextX + 27, nextY + 25, nextX + 10, nextY + 35);
   triangle(nextX + 27, nextY + 15, nextX + 44, nextY + 25, nextX + 27, nextY + 35);
   
-  rect(prevX, prevY, 50, 50, 10);
+  rect(prevX, prevY, 50, 50, 10); //draws prev song button
   triangle(prevX + 27, prevY + 15, prevX + 10, prevY + 25, prevX + 27, prevY + 35);
   triangle(prevX + 44, prevY + 15, prevX + 27, prevY + 25, prevX + 44, prevY + 35);
   
@@ -117,7 +95,7 @@ void draw() {
     endOfSong();
   }
   
-  vol = ((volDotX - volLineX) / 160); //sets the volume based on the position of the volume knob
+  vol = ((volDotX - volLineX) / 160); //sets the volume variable based on the position of the volume knob
   
   checkSongTime();
 }
@@ -161,7 +139,7 @@ void nextSong() { //function that goes to the next song when the next song butto
   currentTimeM = 0;
   currentTimeS = 1;
   songStartMillis = millis();
-  play = true; //used so that the program can go the the next song if a song isn't playing
+  play = true; //used so that the program can go to the next song if a song isn't playing
 }
 
 void prevSong() { //function that goes to the previous song when the previous song button is pressed
@@ -177,7 +155,7 @@ void prevSong() { //function that goes to the previous song when the previous so
   currentTimeM = 0;
   currentTimeS = 1;
   songStartMillis = millis();
-  play = true; //used so that the program can go the the next song if a song isn't playing
+  play = true; //used so that the program can go to the previous song if a song isn't playing
 }
 
 void checkSongTime() { //function to count how far into the song the program is
@@ -188,7 +166,7 @@ void checkSongTime() { //function to count how far into the song the program is
     if (currentTimeS >= 61) { //adds to the minute counter every minute
       currentTimeM += 1;
       songStartMillis = millis();
-      currentTimeS -= 60;
+      currentTimeS -= 60; //restarts second counter variable
     }
   }
 }
