@@ -3,15 +3,12 @@ import processing.sound.*;
 PFont seg; //creates font
 
 void setup() {
-  
   size(383, 200); 
   seg = createFont("digital-7.ttf", 50.0); //assigns the font
   textFont(seg, 50);
   
   assignSongs();
-  
-  songDurationM = floor((songs[currentSong].duration()) / 60); //for explanation check playPauseMusic()
-  songDurationS = int((60 * ((songs[currentSong].duration()) / 60 - (floor((songs[currentSong].duration()) / 60)))));
+  checkSongDuration();
 }
 
 void draw() {
