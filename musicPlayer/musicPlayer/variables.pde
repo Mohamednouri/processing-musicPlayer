@@ -27,5 +27,5 @@ float songStartMillis = 0; //used to find how far into the song the program is
 int currentTimeM = 0; //how many minutes into the song the program is
 int currentTimeS = 1; //how many seconds into the song the program is, excluding minutes
 
-String songDurationDisplay; //used to display the length of the song
-String currentTimeDisplay; //used to display how far into the song the program is
+String songDurationDisplay = "0:00"; //used to display the length of the song
+  String currentTimeDisplay = "0:00"; //used to display how far into the song the program is
