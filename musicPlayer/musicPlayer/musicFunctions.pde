@@ -9,7 +9,6 @@ void playPauseMusic() { //function to play and pause the music when the play but
 }
 
 void endOfSong() { //function that goes to the next song when the current one is finished
-  //songs[currentSong].stop(); //stops playing the current song (REDUNDANT)
   if (currentSong == songs.length - 1) { //if the current song is the last one in the playlist
     currentSong = 0; //goes back to first song
   } else {

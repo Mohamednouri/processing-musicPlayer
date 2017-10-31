@@ -27,7 +27,7 @@ void draw() {
     endOfSong();
   }
   
-  checkSongTime();
+  checkSongTime(); //calls function to check how far along the song is
 }
 
 void buttonPress() {
