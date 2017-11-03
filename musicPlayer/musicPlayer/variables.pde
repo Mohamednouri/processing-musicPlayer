@@ -28,4 +28,4 @@ int currentTimeM = 0; //how many minutes into the song the program is
 int currentTimeS = 1; //how many seconds into the song the program is, excluding minutes
 
 String songDurationDisplay = "0:00"; //used to display the length of the song
-  String currentTimeDisplay = "0:00"; //used to display how far into the song the program is
+String currentTimeDisplay = "0:00"; //used to display how far into the song the program is

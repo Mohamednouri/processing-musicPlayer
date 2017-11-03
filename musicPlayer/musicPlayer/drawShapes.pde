@@ -19,8 +19,8 @@ void drawShapes() {
   triangle(nextX + 27, nextY + 15, nextX + 44, nextY + 25, nextX + 27, nextY + 35);
   
   rect(prevX, prevY, 50, 50, 10); //draws prev song button
-  triangle(prevX + 27, prevY + 15, prevX + 10, prevY + 25, prevX + 27, prevY + 35);
-  triangle(prevX + 44, prevY + 15, prevX + 27, prevY + 25, prevX + 44, prevY + 35);
+  triangle(prevX + 24, prevY + 15, prevX + 7, prevY + 25, prevX + 24, prevY + 35);
+  triangle(prevX + 41, prevY + 15, prevX + 24, prevY + 25, prevX + 41, prevY + 35);
   
   if (play) {
     fill(0, 150, 50); //makes the play pause button green while music playing

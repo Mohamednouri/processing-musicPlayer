@@ -87,4 +87,6 @@ void checkSongDuration() {
   } else {
     songDurationDisplay = str(songDurationM) + ":" + str(songDurationS);
   }
+  
+  songs[currentSong].amp(vol); //this is in here to make sure that the volume stays the same between songs
 }
