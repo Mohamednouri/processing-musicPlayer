@@ -5,8 +5,9 @@ void drawShapes() {
   
   fill(255); //draws information to screen
   text(str(currentSong + 1) + "-" + songNames[currentSong], screenX, screenY + 38); //song name
-  text(songDurationDisplay, screenX, screenY + 76); //length of song
-  text(currentTimeDisplay, screenX + 251, screenY + 76); //how far along into song
+  text(songDurationDisplay, screenX + 251, screenY + 76); //length of song
+  text(currentTimeDisplay, screenX, screenY + 76); //how far along into song
+  text("-", screenX + 159, screenY + 76); //draws - between time values
   
   strokeWeight(1);
   stroke(255);
